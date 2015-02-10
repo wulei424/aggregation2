@@ -33,7 +33,10 @@ maxEcc = .7; minSizeSplit = 30; maxSizeSplit = 1000;
 
 
 %load an image
-I_org = imread('Demo1.png');
+%I_org = imread('Demo1.png');
+I_org = imread('1204-3-4_t10.TIF');
+I_org=uint8(double(I_org)*2^8/2^16);
+
 
 %run the code and visualize it
 bw = segmentImage(I_org,'visualize',true);
