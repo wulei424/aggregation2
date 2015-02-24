@@ -1,6 +1,10 @@
 
+<<<<<<< HEAD
 frames=2:1:400;
 stats={};
+=======
+frames=2:400;
+>>>>>>> origin/master
 for i=1:length(frames);
     frame=frames(i);
     I = imread(sprintf('1204-3-4_t%d.TIF',frame));
@@ -14,9 +18,15 @@ for i=1:length(frames);
 %     bw2=imerode(bw,se);
 
 %     to visualize the individual areas
+<<<<<<< HEAD
      figure(1);imshowpair(I,bw);
      title(['im = ',num2str(i)])
      pause;
+=======
+%     figure(1);imshowpair(I,bw);
+%     title(['im = ',num2str(i)])
+%     pause;
+>>>>>>> origin/master
     
     %A2(i)=mean(bw(:));
     
@@ -27,6 +37,7 @@ for i=1:length(frames);
     meanValues=cellfun(@(x) mean(x(:)), Asplit);
     sigma_A(i)=2*std(meanValues(:))./sqrt(length(meanValues));
     A(i)=mean(meanValues(:));
+<<<<<<< HEAD
     %[Afromcorr, radial_average, radii_list, Cnorm]=meanareafromautocorr(I2,250);
     %figure(1);plot(radii_list* .180^2,radial_average/Cnorm,'-','LineWidth',3,'Color',mycolors(i,:));xlabel('Radii [\mum]');ylabel('normalized autocorrelation');ylim([0,1]);hold all;
     
@@ -77,3 +88,11 @@ end
    hold on;
    figure(3);plot(frames,Acorr2*(0.180)^2);hold on;
    
+=======
+end
+
+figure;errorbar(frames,A,sigma_A)
+
+
+%figure;plot(A);
+>>>>>>> origin/master
