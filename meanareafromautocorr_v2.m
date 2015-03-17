@@ -9,12 +9,12 @@ maxr = 50; % round(0.4 * size(I,1));
 end
 
 % compute autocorrelation
+I=double(I)-mean(double(I(:)));
 R=xcorr2_fast(I);
 
 dr=1;
 center = (size(R)+3)/2;
 
-<<<<<<< HEAD
 if nargin ==2
     [out,X,Y,dX,dY]=radialaverageimage(R,center,dr,maxr);
 
@@ -22,19 +22,12 @@ else
 
 [out,X,Y,dX,dY]=radialaverageimage(R,center,dr,maxr,X,Y,dX,dY);
 end
-=======
-[out,X,Y,dX,dY]=radialaverageimage(img,center,dr,X,Y,dX,dY);
->>>>>>> origin/master
 
 radial_average_profile=out(:,1);
 radii_list=out(:,2);
 
 Cnorm = max(R(:));
-<<<<<<< HEAD
 r=find(radial_average_profile./Cnorm < 1/exp(1), 1, 'First');
-=======
-r=find(radial_average./Cnorm < 1/exp(1), 1, 'First');
->>>>>>> origin/master
 
 if isempty(r)
     warning('correlation did not drop below threshold within sampling window. make maxlag larger or get larger images');
@@ -49,26 +42,20 @@ end
 % HELPER FUNCTIONS
 
 
-<<<<<<< HEAD
-function [out,X,Y,dX2,dY2]=radialaverageimage(img,center,dr,maxr,X,Y,dX,dY,dostd)
-=======
-function [out,X,Y,dX,dY]=radialaverageimage(img,center,dr,X,Y,dX,dY,dostd)
->>>>>>> origin/master
-method=0;
-
+function [out,X,Y,dX2,dY2]=radialaverageimage(img,center,dr,maxr,X,Y,dX,dY,dostd, method)
+    if nargin<9
+        method=0;
+    end
+    
 if nargin<3
     dr=1;
 end
 
-<<<<<<< HEAD
 if nargin<4
     maxr=round(max(size(img)));
 end
 
 if nargin<8
-=======
-if nagin<8
->>>>>>> origin/master
     dostd=false;
 end
 
@@ -76,19 +63,12 @@ xc=center(1);
 yc=center(2);
 
 if method==0
-<<<<<<< HEAD
 radii=dr:dr:maxr;
-=======
->>>>>>> origin/master
 
 if nargin<7
     
     % Create the meshgrid to be used in resampling
 [X,Y] = meshgrid(1:size(img,1),1:size(img,2));
-<<<<<<< HEAD
-=======
-radii=dr:dr:round(max(size(img)));
->>>>>>> origin/master
 
 for r=1:length(radii)
     radius=radii(r);
@@ -129,7 +109,6 @@ end
 % radial average in one step
 %dX2=cell2matNaN(dX);
 %dY2=cell2matNaN(dY);
-<<<<<<< HEAD
 
 % interp2method
 %interpmethod='*linear';
@@ -143,17 +122,15 @@ interpfoo=@(r) nanmean(F(dX2(r,~isnan(dX2(r,:)))+xc, dY2(r,~isnan(dX2(r,:)))+yc)
 radial_slices = arrayfun(interpfoo, 1:length(radii),'UniformOutput',false);
 
 
-=======
-radial_slices = arrayfun(@(r) nanmean(interp2(X,Y,img,dX2(r,~isnan(dX2(r,:)))+xc, dY2(r,~isnan(dX2(r,:)))+yc)), 1:length(radii),'UniformOutput',false);
->>>>>>> origin/master
 radial_average_profile=gather([radial_slices{:}]);
 radial_sigma_profile=[];
 
-else
+elseif method==1
 %SLOW METHOD
 % Create the meshgrid to be used in resampling
 [X,Y] = meshgrid(1:size(img,1),1:size(img,2));
-radii=dr:dr:round(max(size(img)));
+radii=dr:dr:maxr;
+radial_sigma_profile=[];
 for r = 1:length(radii)
 % To avoid redundancy, sample at roughly 1 px distances
 radius=radii(r);
@@ -165,10 +142,20 @@ sampled_radial_slice = interp2(X,Y,img,x,y);
 radial_average_profile(r) = nanmean(sampled_radial_slice);
 
 if dostd
-    radial_sigma_profile(r) = nanstd(sampled_radial_slice);
+    radial_sigma_profile(r) = nanstd(sampled_radial_slice);   
+end
+
+if nargin<7
+    dX2=[];
+    dY2=[];
+else
+    dX2=dX;
+    dY2=dY;
 end
 
 end
+
+
 
 end
 
@@ -317,7 +304,6 @@ ylags=(-(Hc-1)/2):((Hc-1)/2);
     function x=ensureodd(x)
         if mod(x,2)==0; 
              x=x+1;
-<<<<<<< HEAD
         end
         
         
@@ -625,6 +611,3 @@ if tf && nargin > 1
 end
 
 
-=======
-        end
->>>>>>> origin/master
